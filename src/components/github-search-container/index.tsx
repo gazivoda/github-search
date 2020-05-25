@@ -45,44 +45,44 @@ type GithubSearchContainerProps = WithApolloClient<GithubSearchContainer>;
 type MyState = { searchText: string, result: {} };
 
 class GithubSearchContainer extends Component<GithubSearchContainerProps, MyState>  {
-    constructor(props: GithubSearchContainerProps) {
-        super(props);
-    }
+  constructor(props: GithubSearchContainerProps) {
+    super(props);
+  }
 
-    state = {
-        searchText: '',
-        result: {},
-        selectedProfile: {}
-    }
+  state = {
+    searchText: '',
+    result: {},
+    selectedProfile: {}
+  }
 
-    _executeSearch = async () => {
-        const { searchText } = this.state;
-        const result = await this.props.client.query({
-            query: GET_CURRENT_USER,
-            variables: { searchText }
-        });
+  _executeSearch = async () => {
+    const { searchText } = this.state;
+    const result = await this.props.client.query({
+      query: GET_CURRENT_USER,
+      variables: { searchText }
+    });
 
-        this.setState({ result: result.data });
-    }
+    this.setState({ result: result.data });
+  }
 
-    handleTextChange = (e) => {
-        this.setState({ searchText: e.target.value })
-    }
+  handleTextChange = (e) => {
+    this.setState({ searchText: e.target.value })
+  }
 
-    render() {
-        return (
-            <div>
-                <Search onChange={this.handleTextChange} />
-                {this.state.searchText}
-                <button
-                    onClick={() => this._executeSearch()}
-                >button</button>
-                <div>
-                    {JSON.stringify(this.state.result)}
-                </div>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <Search onChange={this.handleTextChange} />
+        {this.state.searchText}
+        <button
+          onClick={() => this._executeSearch()}
+        >button</button>
+        <div>
+          {JSON.stringify(this.state.result)}
+        </div>
+      </div>
+    );
+  }
 }
 
 export default withApollo(GithubSearchContainer);
