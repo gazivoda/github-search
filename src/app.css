@@ -1,0 +1,21 @@
+.search-field {
+    width: 400px;
+    margin: 0 auto;
+}
+
+.search-field__input {
+    width: 100%;
+    background: white;
+    border-radius: 5px;
+}
+
+.searc-field__progress {
+    border-radius: 5px;
+    height: 1.1876em !important;
+    opacity: 0.8;
+    filter: blur(3px);
+    background: white;
+    padding: 17.5px 14px;
+    z-index: -1;
+    margin-top: calc(-1.1876em - 2 * 16.5px);
+}
