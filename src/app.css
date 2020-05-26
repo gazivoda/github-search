@@ -1,5 +1,22 @@
+body {
+    margin: 0;
+    font-family: 'BlenderPro';
+}
+
+@font-face {
+    font-family: 'BlenderPro';
+    src: url('../assets/font/BlenderPro-Medium.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'BlenderPro';
+    src: url('../assets/font/BlenderPro-Bold.woff') format('woff');
+    font-weight: bold;
+}
+
 .search-field {
-    width: 400px;
+    max-width: 350px;
+    padding: 18px;
     margin: 0 auto;
 }
 
@@ -18,4 +35,17 @@
     padding: 17.5px 14px;
     z-index: -1;
     margin-top: calc(-1.1876em - 2 * 16.5px);
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+    padding-left: 5px;
+    filter: invert(1);
+    margin-top: 12px;
+}
+
+.app-bar {
+    justify-content: space-between;
+    flex-direction: row !important;
 }
