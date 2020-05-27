@@ -19,10 +19,6 @@ type Repository = {
   url: string
 }
 
-type UserData = {
-  user: UserProfile[];
-}
-
 const REPOSITORY_ATTRIBUTES = gql`
 fragment RepositoryAttributes on Repository { 
     id
@@ -64,14 +60,14 @@ ${USER_ATTRIBUTES}
 `;
 
 type GithubSearchContainerProps = WithApolloClient<GithubSearchContainer>;
-type MyState = { searchText: string, result: UserData, selectedProfile: UserProfile, loading: boolean };
+type MyState = { searchText: string, result: UserProfile[], selectedProfile: UserProfile, loading: boolean };
 
 class GithubSearchContainer extends Component<GithubSearchContainerProps, MyState>  {
   constructor(props: GithubSearchContainerProps) {
     super(props);
     this.state = {
       searchText: '',
-      result: null,
+      result: [],
       selectedProfile: null,
       loading: false
     }
@@ -79,12 +75,17 @@ class GithubSearchContainer extends Component<GithubSearchContainerProps, MyStat
 
   search = async () => {
     const { searchText } = this.state;
+
     const result = await this.props.client.query({
       query: GET_CURRENT_USER,
       variables: { searchText }
     });
 
-    let resultData: UserData = result.data.search.edges.map(userItem => {
+    this.setState({ result: this.state.loading ? this.transformResult(result) : this.state.result, loading: false });
+  }
+
+  transformResult = (result): UserProfile[] => {
+    return result.data.search.edges.map(userItem => {
       userItem.node.repositories = userItem?.node?.repositories?.edges?.map(repoItem => {
         delete repoItem.node.__typename;
         return repoItem.node
@@ -92,15 +93,22 @@ class GithubSearchContainer extends Component<GithubSearchContainerProps, MyStat
       delete userItem.node.__typename;
       return userItem.node;
     });
-
-    this.setState({ result: resultData, loading: false });
   }
 
   executeSearch = _.debounce(this.search, 300);
 
   handleTextChange = (e) => {
-    this.setState({ searchText: e.target.value, loading: true })
-    this.executeSearch();
+    debugger;
+    const searchValue = e.target.value;
+    if (searchValue === '') {
+      // * Handle empty input case
+      this.setState({ searchText: searchValue, loading: false, result: [] });
+    } else {
+      // * Grapql query execution if input is not empty
+      this.setState({ searchText: searchValue, loading: true })
+      this.executeSearch();
+    }
+
   }
 
   render() {
