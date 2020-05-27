@@ -98,7 +98,6 @@ class GithubSearchContainer extends Component<GithubSearchContainerProps, MyStat
   executeSearch = _.debounce(this.search, 300);
 
   handleTextChange = (e) => {
-    debugger;
     const searchValue = e.target.value;
     if (searchValue === '') {
       // * Handle empty input case
