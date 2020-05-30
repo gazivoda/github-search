@@ -1,23 +1,27 @@
 import gql from 'graphql-tag';
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { withApollo, WithApolloClient } from 'react-apollo';
+import Profile from '../profile';
 import Search from '../search/index';
-import _ from 'lodash';
+import RepositoriesModal from '../repositories-modal';
 
 type UserProfile = {
-  id: string
-  name: string
-  email: string
-  url: string
-  avatarUrl: string
-  repositories: Repository[]
-}
+  id: string,
+  login: string,
+  name: string,
+  email: string,
+  url: string,
+  avatarUrl: string,
+  repositories: Repository[],
+  open: boolean
+};
 
 type Repository = {
-  id: string
-  name: string
-  url: string
-}
+  id: string,
+  name: string,
+  url: string,
+};
 
 const REPOSITORY_ATTRIBUTES = gql`
 fragment RepositoryAttributes on Repository { 
@@ -31,10 +35,11 @@ const USER_ATTRIBUTES = gql`
 fragment UserAttributes on User { 
     id
     name
+    login
     email
     url
     avatarUrl
-    repositories(first: 20){
+    repositories(first: 21){
       edges{
         node{
           ...RepositoryAttributes
@@ -47,7 +52,7 @@ fragment UserAttributes on User {
 
 const GET_CURRENT_USER = gql`
 query searchUsers($searchText: String!){
-    search(query: $searchText, type: USER, first: 20) {
+    search(query: $searchText, type: USER, first: 21) {
       userCount
       edges {
         node {
@@ -60,14 +65,14 @@ ${USER_ATTRIBUTES}
 `;
 
 type GithubSearchContainerProps = WithApolloClient<GithubSearchContainer>;
-type MyState = { searchText: string, result: UserProfile[], selectedProfile: UserProfile, loading: boolean };
+type MyState = { searchText: string, results: UserProfile[], selectedProfile: UserProfile, loading: boolean };
 
 class GithubSearchContainer extends Component<GithubSearchContainerProps, MyState>  {
   constructor(props: GithubSearchContainerProps) {
     super(props);
     this.state = {
       searchText: '',
-      result: [],
+      results: [],
       selectedProfile: null,
       loading: false
     }
@@ -76,21 +81,22 @@ class GithubSearchContainer extends Component<GithubSearchContainerProps, MyStat
   search = async () => {
     const { searchText } = this.state;
 
-    const result = await this.props.client.query({
+    const results = await this.props.client.query({
       query: GET_CURRENT_USER,
       variables: { searchText }
     });
 
-    this.setState({ result: this.state.loading ? this.transformResult(result) : this.state.result, loading: false });
+    this.setState({ results: this.state.loading ? this.transformResults(results) : this.state.results, loading: false });
   }
 
-  transformResult = (result): UserProfile[] => {
-    return result.data.search.edges.map(userItem => {
+  transformResults = (results): UserProfile[] => {
+    return results.data.search.edges.map(userItem => {
       userItem.node.repositories = userItem?.node?.repositories?.edges?.map(repoItem => {
         delete repoItem.node.__typename;
         return repoItem.node
       });
       delete userItem.node.__typename;
+      userItem.node.open = false;
       return userItem.node;
     });
   }
@@ -98,27 +104,38 @@ class GithubSearchContainer extends Component<GithubSearchContainerProps, MyStat
   executeSearch = _.debounce(this.search, 300);
 
   handleTextChange = (e) => {
-    const searchValue = e.target.value;
+    const searchValue = !!e ? e.target.value : '';
     if (searchValue === '') {
       // * Handle empty input case
-      this.setState({ searchText: searchValue, loading: false, result: [] });
+      this.setState({ searchText: searchValue, loading: false, results: [] });
     } else {
       // * Grapql query execution if input is not empty
       this.setState({ searchText: searchValue, loading: true })
       this.executeSearch();
     }
-
   }
+
+  handleOpenChange(result: UserProfile, value: boolean) {
+    this.setState((state: MyState) => {
+      const stateCopy = JSON.parse(JSON.stringify(state));
+      stateCopy.results.find(item => item.id === result.id).open = value;
+      return { ...stateCopy };
+    });
+  };
 
   render() {
     return (
       <div>
+        <h1 style={{ color: '#e6c8b5', textAlign: 'center' }}>Search Github users by their username...</h1>
         <Search onChange={this.handleTextChange} loading={this.state.loading} />
-        {this.state.searchText}
-        <div>
-          {JSON.stringify(this.state.result)}
+        <div className='profiles-container'>
+          {this.state.results.map((result: UserProfile) =>
+            <Profile key={result.id} {...result} onClick={() => this.handleOpenChange(result, true)} >
+              <RepositoriesModal open={result.open || false} onClose={() => this.handleOpenChange(result, false)}></RepositoriesModal>
+            </Profile>
+          )}
         </div>
-      </div>
+      </div >
     );
   }
 }

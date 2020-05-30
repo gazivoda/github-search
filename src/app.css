@@ -49,3 +49,60 @@ body {
     justify-content: space-between;
     flex-direction: row !important;
 }
+
+.profiles-container {
+    display: flex;
+    flex-flow: wrap;
+}
+
+.profile-card {
+    margin: 15px;
+    width: calc(33% - 30px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.profile-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    cursor: pointer;
+}
+
+.profile-card__container {
+    padding: 15px;
+    height: 90px;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+}
+
+.profile-card__container a {
+    text-decoration: none;
+    color: #0097dc;
+}
+
+.profile-card__container__first-item,
+.profile-card__container__second-item {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.MuiAvatar-circle {
+    border: solid 1px #e7c8b5;
+    border-radius: 50%;
+}
+
+.icon-close-button {
+    float: right;
+}
+
+@media only screen and (max-width: 900px) {
+    .profile-card {
+        width: calc(50% - 30px);
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .profile-card {
+        width: calc(100% - 30px);
+    }
+}
