@@ -20,14 +20,21 @@ a {
 }
 
 .search-field {
-    max-width: 350px;
+    max-width: calc(33.33% - 30px);
     padding: 18px;
     margin: 0 auto;
+
+    position: sticky;
+    top: 30px;
+    background: white;
+    z-index: 99;
+    padding: 0;
+    margin-bottom: 15px;
 }
 
 .search-field__input {
     width: 100%;
-    background: white;
+    background: #f7f8ff;
     border-radius: 5px;
 }
 
@@ -62,12 +69,12 @@ a {
 
 .profile-card {
     margin: 15px;
-    width: calc(33% - 30px);
+    width: calc(33.33% - 30px);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .profile-card:hover {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     cursor: pointer;
 }
 
@@ -94,9 +101,13 @@ a {
 .icon-close-button {
     float: right;
 }
-
+/* Some default material UI configuration changed */
 .MuiDialog-paperWidthSm {
     max-width: unset !important;
+}
+
+.MuiDialog-paperWidthSm .MuiPaper-elevation1 {
+    box-shadow: unset !important;
 }
 
 .MuiTableCell-root {
