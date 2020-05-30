@@ -1,12 +1,13 @@
 import gql from 'graphql-tag';
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withApollo, WithApolloClient } from 'react-apollo';
 import Profile from '../profile';
 import Search from '../search/index';
 import RepositoriesModal from '../repositories-modal';
+import RepositoriesTable from '../repositories-table';
 
-type UserProfile = {
+export type UserProfile = {
   id: string,
   login: string,
   name: string,
@@ -17,9 +18,10 @@ type UserProfile = {
   open: boolean
 };
 
-type Repository = {
+export type Repository = {
   id: string,
   name: string,
+  description: string,
   url: string,
 };
 
@@ -27,6 +29,7 @@ const REPOSITORY_ATTRIBUTES = gql`
 fragment RepositoryAttributes on Repository { 
     id
     name
+    description
     url
 }
 `;
@@ -125,17 +128,19 @@ class GithubSearchContainer extends Component<GithubSearchContainerProps, MyStat
 
   render() {
     return (
-      <div>
+      <Fragment>
         <h1 style={{ color: '#e6c8b5', textAlign: 'center' }}>Search Github users by their username...</h1>
         <Search onChange={this.handleTextChange} loading={this.state.loading} />
         <div className='profiles-container'>
           {this.state.results.map((result: UserProfile) =>
-            <Profile key={result.id} {...result} onClick={() => this.handleOpenChange(result, true)} >
-              <RepositoriesModal open={result.open || false} onClose={() => this.handleOpenChange(result, false)}></RepositoriesModal>
+            <Profile key={result.id} {...result} onClick={() => !!result.repositories && !!result.repositories.length && this.handleOpenChange(result, true)} >
+              <RepositoriesModal title={result.name} open={result.open || false} onClose={() => this.handleOpenChange(result, false)}>
+                <RepositoriesTable data={result.repositories}></RepositoriesTable>
+              </RepositoriesModal>
             </Profile>
           )}
         </div>
-      </div >
+      </Fragment >
     );
   }
 }

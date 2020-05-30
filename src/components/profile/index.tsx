@@ -16,7 +16,6 @@ const Profile = (props: {
     const [flipped, setFlipped] = useState(false);
 
     const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const { transform, opacity } = useSpring({
         opacity: flipped ? 1 : 0,

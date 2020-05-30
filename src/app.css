@@ -3,6 +3,11 @@ body {
     font-family: 'BlenderPro';
 }
 
+a {
+    text-decoration: none;
+    color: #0097dc;
+}
+
 @font-face {
     font-family: 'BlenderPro';
     src: url('../assets/font/BlenderPro-Medium.woff') format('woff');
@@ -74,11 +79,6 @@ body {
     justify-content: space-between;
 }
 
-.profile-card__container a {
-    text-decoration: none;
-    color: #0097dc;
-}
-
 .profile-card__container__first-item,
 .profile-card__container__second-item {
     display: flex;
@@ -93,6 +93,19 @@ body {
 
 .icon-close-button {
     float: right;
+}
+
+.MuiDialog-paperWidthSm {
+    max-width: unset !important;
+}
+
+.MuiTableCell-root {
+    max-width: 250px;
+}
+
+.MuiDialogTitle-root {
+    display: flex;
+    justify-content: space-between;
 }
 
 @media only screen and (max-width: 900px) {
