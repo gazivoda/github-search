@@ -1,16 +1,16 @@
-# Github Search 🔍
+# 🔍Github Search 
 
 Github Serach React typescript app using API v4 Grapql
 
-## Getting Started 🎬
+## 🎬 Getting Started 
 
 Clone repo to you local maschine
 
-### Prerequisites 📖
+### 📖Prerequisites
 
 Latest version of Node and Yarn installed
 
-### Installing 🔄
+### 🔄Installing 
 
 Install all packagaes 
 
@@ -25,11 +25,11 @@ npm install
 ```
 
 
-## Adding evnironments 🗂
+## 🗂 Adding evnironments 
 To utilise github api you would need a key, key should be stored in root of project in `.env` file under `GIT_TOKEN` name
 After adding a file and token to it you are all set 
 
-## Starting app 🏁
+## 🏁Starting app
 
 To start the app run
 ```
@@ -43,7 +43,7 @@ npm run dev
 ```
 
 
-### Coding style 🎨
+### 🎨Coding style 
 
 Eslint is used in whole application
 
