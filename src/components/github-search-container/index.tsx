@@ -42,7 +42,7 @@ fragment UserAttributes on User {
     email
     url
     avatarUrl
-    repositories(first: 21){
+    repositories(ownerAffiliations:[OWNER], first: 20){
       edges{
         node{
           ...RepositoryAttributes

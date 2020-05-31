@@ -7,14 +7,14 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import React from "react";
+import React, { useState } from "react";
 import { Repository } from "../github-search-container";
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
+function descendingComparator<T>(a: T, b: T, orderBy: any) {
+    if (b[orderBy].toLowerCase() < a[orderBy].toLowerCase()) {
         return -1;
     }
-    if (b[orderBy] > a[orderBy]) {
+    if (b[orderBy].toLowerCase() > a[orderBy].toLowerCase()) {
         return 1;
     }
     return 0;
@@ -26,34 +26,32 @@ function getComparator<Key extends keyof any>(
     order: Order,
     orderBy: Key
 ): (
-        a: { [key in Key]: number | string },
-        b: { [key in Key]: number | string }
+        a: { [key in Key]: string },
+        b: { [key in Key]: string }
     ) => number {
     return order === "desc"
         ? (a, b) => descendingComparator(a, b, orderBy)
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
-    const stabilizedThis = array?.map((el, index) => [el, index] as [T, number]);
-    stabilizedThis?.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
+function stableSort<T>(array: any, comparator: (a: T, b: T) => number) {
+    array?.sort((a, b) => {
+        const order = comparator(a, b);
         if (order !== 0) return order;
-        return a[1] - b[1];
+        return a - b;
     });
-    return stabilizedThis?.map(el => el[0]);
+    return array?.map(el => el);
 }
 
 interface HeadCell {
     id: keyof Repository;
     label: string;
-    numeric: boolean;
 }
 
 const headCells: HeadCell[] = [
-    { id: "name", numeric: false, label: "Name" },
-    { id: "description", numeric: false, label: "Description" },
-    { id: "url", numeric: false, label: "url" }
+    { id: "name", label: "Name" },
+    { id: "description", label: "Description" },
+    { id: "url", label: "Url" }
 ];
 
 interface EnhancedTableProps {
@@ -82,7 +80,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
                 {headCells.map(headCell => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? "right" : "left"}
+                        align={"left"}
                         padding={"default"}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
@@ -101,7 +99,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
                     </TableCell>
                 ))}
             </TableRow>
-        </TableHead>
+        </TableHead >
     );
 }
 
@@ -133,16 +131,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const RepositoriesTable = (props: { data: Repository[] }) => {
     const classes = useStyles();
-    const [order, setOrder] = React.useState<Order>("asc");
-    const [orderBy, setOrderBy] = React.useState<keyof Repository>('name');
+    const [order, setOrder] = useState<Order>("asc");
+    const [orderBy, setOrderBy] = useState<keyof Repository>('name');
 
-    const handleRequestSort = (
-        event: React.MouseEvent<unknown>,
-        property: keyof Repository
-    ) => {
-        const isAsc = orderBy === property && order === "asc";
+    const handleRequestSort = () => {
+        const isAsc = orderBy === 'name' && order === "asc";
         setOrder(isAsc ? "desc" : "asc");
-        setOrderBy(property);
+        setOrderBy('name');
     };
 
     return (
