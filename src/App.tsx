@@ -7,17 +7,14 @@ const theme = createMuiTheme({
     palette: {
         primary: { main: '#0097dc' },
         secondary: { main: '#3a3c45' }
-    },
-    typography: {
-        fontFamily: 'BlenderPro',
-    },
+    }
 });
 
 const App = () =>
     <div>
         <ThemeProvider theme={theme}>
             <AppBar className="app-bar" position="static">
-                <img className="logo" src="../../assets/logo.png" alt="Logo" />
+                {/* <img className="logo" src="../../assets/logo.png" alt="Logo" /> */}
                 <Toolbar>
                     <Typography variant="h6">
                         Github Search
